@@ -2,6 +2,7 @@ package cn.codewoo.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 public class Chapter implements Serializable {
     private Integer id;
@@ -70,5 +71,22 @@ public class Chapter implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Chapter chapter = (Chapter) o;
+        return Objects.equals(id, chapter.id) &&
+                Objects.equals(videoId, chapter.videoId) &&
+                Objects.equals(title, chapter.title) &&
+                Objects.equals(ordered, chapter.ordered) &&
+                Objects.equals(createTime, chapter.createTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, videoId, title, ordered, createTime);
     }
 }
