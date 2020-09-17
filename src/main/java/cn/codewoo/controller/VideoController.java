@@ -2,9 +2,15 @@ package cn.codewoo.controller;
 
 import cn.codewoo.entity.Video;
 import cn.codewoo.mapper.VideoMapper;
+import cn.codewoo.utils.DataResult;
 import cn.codewoo.vo.req.VideoInsertReqVO;
+import cn.codewoo.vo.req.VideoPageReqVO;
 import cn.codewoo.vo.req.VideoUpdateReqVO;
-import org.springframework.beans.BeanUtils;
+import cn.codewoo.vo.resp.PageRespVO;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,50 +22,33 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/video")
+@Api(tags = "视频相关api")
 public class VideoController {
-    @Autowired(required = false)
     private VideoMapper videoMapper;
-    @GetMapping("/page")
-    public List<Video> pageVideo(){
-        return videoMapper.selectAll();
+    @Autowired(required = false)
+    public void setVideoMapper(VideoMapper videoMapper) {
+        this.videoMapper = videoMapper;
     }
+
+
+    @PostMapping("/page")
+    @ApiOperation(value = "视频分页查询")
+    public DataResult<Video> pageVideo(@RequestBody VideoPageReqVO vo){
+        PageHelper.startPage(vo.getPage(),vo.getSize());
+        List<Video> videos = videoMapper.selectAll();
+        PageInfo<Video> pageInfo = new PageInfo<>(videos);
+        PageRespVO<Video> respVO = new PageRespVO<>();
+        respVO.setData(pageInfo.getList());
+        respVO.setPageNum(pageInfo.getPageNum());
+        respVO.setPages(pageInfo.getPages());
+        respVO.setPageSize(pageInfo.getPageSize());
+        respVO.setSize(pageInfo.getSize());
+        return DataResult.success(respVO);
+    }@ApiOperation(value = "根据id查询视频记录")
     @GetMapping("/get")
-    public Video selectById(@RequestParam Integer id){
-        return videoMapper.selectByPrimaryKey(id);
-    }
-    @DeleteMapping("/del")
-    public Integer deleteById(@RequestParam Integer id){
-        return videoMapper.deleteByPrimaryKey(id);
+    public DataResult<Video> selectById(@RequestParam Integer id){
+        Video video = videoMapper.selectByPrimaryKey(id);
+        return DataResult.success(video);
     }
 
-    @PutMapping("/update")
-    public Integer updateById(@RequestBody VideoUpdateReqVO vo){
-        Video video = Video.builder()
-                .id(vo.getId())
-                .coverImg(vo.getCoverImg())
-                .online(vo.getOnline())
-                .point(vo.getPoint())
-                .price(vo.getPrice())
-                .summary(vo.getSummary())
-                .title(vo.getTitle())
-                .viewNum(vo.getViewNum()).build();
-        return videoMapper.updateByPrimaryKeySelective(video);
-    }
-
-    @PostMapping("/add")
-    public Integer insert(@RequestBody VideoInsertReqVO vo){
-//        Video video = Video.builder().build();
-//        BeanUtils.copyProperties(vo,video);
-        Video video = Video.builder()
-                .createTime(vo.getCreateTime())
-                .viewNum(vo.getViewNum())
-                .title(vo.getTitle())
-                .summary(vo.getSummary())
-                .price(vo.getPrice())
-                .point(vo.getPoint())
-                .online(vo.getOnline())
-                .coverImg(vo.getCoverImg())
-                .build();
-        return videoMapper.insertSelective(video);
-    }
 }
