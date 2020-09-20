@@ -1,16 +1,21 @@
 package cn.codewoo;
 
+import cn.codewoo.entity.User;
+import cn.codewoo.mapper.UserMapper;
+import cn.codewoo.utils.jwt.JwtUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.sql.DataSource;
+import java.sql.Date;
 import java.sql.SQLException;
 
 @SpringBootTest
 class XdclassApplicationTests {
     @Autowired
     DataSource dataSource;
+
 
     @Test
     void contextLoads() {
@@ -29,6 +34,16 @@ class XdclassApplicationTests {
                 System.out.println(true);
             }
         }
+    }
+
+    @Test
+    void jwtUtils_test(){
+        User user = new User();
+        user.setId(1);
+        user.setCreateTime(new Date(System.currentTimeMillis()));
+        user.setHeadImg("http://www.codewoo.cn/img/head.png");
+        user.setName("kehong");
+        System.out.println(JwtUtils.geneJsonWebToken(user));
     }
 
 

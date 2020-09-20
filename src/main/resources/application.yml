@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    #druid连接池配置
+    druid:
+      url: jdbc:mysql://42.194.140.230:3306/xdclass?serverTimezone=UTC&useUnicode=utf-8&useSSL=false
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: Kehong0028..
+      initial-size: 5
+      max-active: 20
+      min-idle: 5
+      max-wait: 60000
+      max-pool-prepared-statement-per-connection-size: 20
+      pool-prepared-statements: true
+      validation-query: SELECT 1 FROM DUAL
+      query-timeout: 30000
+      test-on-borrow: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+# 微信相关配置
+# 公众号配置
+wxpay:
+  appId: wx5beac15ca207cdd40c
+  appSecret: 554801238f17fdsdsdd6f96b382fe548215e9
+
+# mybatis相关配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    cn.codewoo: debug
+jwt:
+  subject: "codewoo"
+  appSecret: "kehong00)."
+  expire: PT1H
